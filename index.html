@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- Load d3.js -->
+    <script src="https://d3js.org/d3.v6.js"></script>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <title>D3</title>
+</head>
+<body onload="main()">
+
+    <div class="vis-container">
+        <!-- Create a div where the graph will take place -->
+        <div id="my_dataviz"></div>
+        <div class="slidecontainer" >
+            <p>Year:</p>
+            <input onChange="main()" type="range" min="2018" max="2021" value="2021" class="slider" id="yearInput">
+            <datalist id="years">
+                <option value="2018" label="2018"></option>
+                <option value="2019" label="2019"></option>
+                <option value="2020" label="2020"></option>
+                <option value="2021" label="2021"></option>
+            </datalist>
+        </div>
+    </div>
+
+    <script src="heatMap.js"></script>
+
+</body>
+</html>
