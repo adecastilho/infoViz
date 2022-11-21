@@ -8,14 +8,10 @@ function main() {
         .filter(option => option.selected)
         .map(option => option.value)
 
-console.log(selectedCs)
-console.log(selectedNs)
     // set the dimensions and margins of the graph
     const margin = {top: 80, right: 25, bottom: 150, left: 150},
         width = 210 + (40 * selectedCs.length) - margin.left - margin.right,
         height = 260 + (40 * selectedNs.length) - margin.top - margin.bottom;
-
-    console.log(40 * selectedNs.length)
 
     // clear if re-rendering
     const oldSvg = d3.select('#my_dataviz')
