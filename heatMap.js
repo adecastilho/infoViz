@@ -4,7 +4,7 @@ function main() {
 
     // set the dimensions and margins of the graph
     const margin = {top: 80, right: 25, bottom: 150, left: 150},
-        width = 1000 - margin.left - margin.right,
+        width = 800 - margin.left - margin.right,
         height = 800 - margin.top - margin.bottom;
 
     // clear if re-rendering
@@ -61,7 +61,7 @@ function main() {
         // Build color scale
         var myColor = d3.scaleLinear()
             .range(["white", "#69b3a2"])
-            .domain([1, 50])
+            .domain([1, 100])
 
         // create a tooltip
         const tooltip = d3.select("#my_dataviz")
