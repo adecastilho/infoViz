@@ -12,7 +12,7 @@
     <div class="vis-container">
         <!-- Create a div where the graph will take place -->
         <div id="my_dataviz"></div>
-        <div class="slidecontainer" >
+        <div class="input-container" >
             <p>Year:</p>
             <input onChange="main()" type="range" min="2018" max="2021" value="2021" class="slider" id="yearInput">
             <datalist id="years">
@@ -21,6 +21,37 @@
                 <option value="2020" label="2020"></option>
                 <option value="2021" label="2021"></option>
             </datalist>
+
+            <p>Neighbourhoods:</p>
+            <select multiple="multiple" size="14" id="neighbourhoodInput" onChange="main()">
+                <option selected value="Burnside">Burnside</option>
+                <option selected value="Downtown">Downtown</option>
+                <option selected value="Fairfield">Fairfield</option>
+                <option selected value="Fernwood">Fernwood</option>
+                <option selected value="Gonzales">Gonzales</option>
+                <option selected value="Harris Green">Harris Green</option>
+                <option selected value="Hillside/Quadra">Hillside/Quadra</option>
+                <option selected value="James Bay">James Bay</option>
+                <option selected value="North Jubilee">North Jubilee</option>
+                <option selected value="North Park">North Park</option>
+                <option selected value="Oaklands">Oaklands</option>
+                <option selected value="Rockland">Rockland</option>
+                <option selected value="South Jubilee">South Jubilee</option>
+                <option selected value="Victoria West">Victoria West</option>
+            </select>
+
+            <p>Categories:</p>
+            <select multiple="multiple" size="9" id="categoryInput" onChange="main()">
+                <option selected value="Accomodation">Accomodation</option>
+                <option selected value="Business & Financial">Business & Financial</option>
+                <option selected value="Food & Liquor">Food & Liquor</option>
+                <option selected value="Non Profit">Non Profit</option>
+                <option selected value="Other">Other</option>
+                <option selected value="Personal Services">Personal Services</option>
+                <option selected value="Professional">Professional</option>
+                <option selected value="Retail">Retail</option>
+                <option selected value="Transportation">Transportation</option>
+             </select>
         </div>
     </div>
 

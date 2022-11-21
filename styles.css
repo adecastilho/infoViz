@@ -79,3 +79,7 @@ datalist {
     display: flex;
     flex-direction: row;
 }
+
+select[multiple] {
+    height: fit-content;
+}

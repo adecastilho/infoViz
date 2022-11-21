@@ -1,11 +1,21 @@
 function main() {
     // get year from input
     var year = document.getElementById("yearInput").value
+    var selectedNs = [...document.getElementById("neighbourhoodInput").options]
+        .filter(option => option.selected)
+        .map(option => option.value)
+    var selectedCs = [...document.getElementById("categoryInput").options]
+        .filter(option => option.selected)
+        .map(option => option.value)
 
+console.log(selectedCs)
+console.log(selectedNs)
     // set the dimensions and margins of the graph
     const margin = {top: 80, right: 25, bottom: 150, left: 150},
-        width = 800 - margin.left - margin.right,
-        height = 800 - margin.top - margin.bottom;
+        width = 210 + (40 * selectedCs.length) - margin.left - margin.right,
+        height = 260 + (40 * selectedNs.length) - margin.top - margin.bottom;
+
+    console.log(40 * selectedNs.length)
 
     // clear if re-rendering
     const oldSvg = d3.select('#my_dataviz')
@@ -26,7 +36,9 @@ function main() {
 
         // Labels of row and columns -> unique identifier of the column called 'group' and 'variable'
         var categories = Array.from(new Set(data.map(d => d.Category)))
+            .filter(c => selectedCs.includes(c))
         var neighbourhoods = Array.from(new Set(data.map(d => d.Neighbourhood)))
+            .filter(n => selectedNs.includes(n))
 
         data = filterOpenInYear(data, year)
         data = countByNeighbourhoodCategory(data, categories, neighbourhoods)
