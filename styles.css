@@ -1,3 +1,7 @@
+html * {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
 #container {
     height: 100px;
     width: 100px;
@@ -101,4 +105,13 @@ select[multiple] {
 
 #t3, #t4 {
     background-color: #FFF5F5;
+}
+
+#radios {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.radio {
+    margin: 16px 16px 16px 0;
 }
