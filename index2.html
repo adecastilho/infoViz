@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- Load d3.js -->
+    <script src="https://d3js.org/d3.v6.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <title>D3</title>
+</head>
+<body onload="main2()">
+
+    <div class="vis-container">
+        <h1>Victoria Businesses: Impact of the Covid-19 Pandemic</h1>
+        <h2>How has the distribution of business types changed?</h2>
+        <div style="display:grid; grid-template-columns: repeat(2, 1fr)">
+            <div>
+                <p>Interact with the treemaps by selecting distribution across all open businesses, across closed businesses, or across newly opened businesses</p>
+            </div>
+            <div>
+                <input type="radio" id="allOpen" name="radAnswer" value="all" checked/>
+                <label for="allOpen">All Open Businesses</label>
+                <input type="radio" id="newOpen" name="radAnswer" value="new"/>
+                <label for="newOpen">Newly Opened Businesses</label>
+                <input type="radio" id="closed" name="radAnswer" value="closed"/>
+                <label for="closed">Closed Businesses</label>
+            </div>
+        </div>
+        <div id="treeMaps">
+            <!-- Create a div where the graph will take place -->
+            <div id="t1"></div>
+            <div id="t2"></div>
+            <div id="t3"></div>
+            <div id="t4"></div>
+        </div>
+        <legend> Business Categories:</legend>
+        <div id="treeLegend"></div>
+
+    </div>
+    <script src="treeMap.js"></script>
+
+</body>
+</html>
