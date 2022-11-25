@@ -1,3 +1,7 @@
+html * {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
 #container {
     height: 100px;
     width: 100px;
@@ -75,11 +79,39 @@ datalist {
     width: 150px;
 }
 
+.heat-container {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+}
+
 .vis-container {
-    display: flex;
-    flex-direction: row;
+    display: grid;
+
 }
 
 select[multiple] {
     height: fit-content;
+}
+
+#treeMaps {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(4, 1fr);
+}
+
+#t1, #t2 {
+    background-color: #F5FFF5;
+}
+
+#t3, #t4 {
+    background-color: #FFF5F5;
+}
+
+#radios {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.radio {
+    margin: 16px 16px 16px 0;
 }

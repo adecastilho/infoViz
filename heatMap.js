@@ -11,7 +11,8 @@ function main() {
     // set the dimensions and margins of the graph
     const margin = {top: 80, right: 25, bottom: 150, left: 150},
         width = 210 + (40 * selectedCs.length) - margin.left - margin.right,
-        height = 260 + (40 * selectedNs.length) - margin.top - margin.bottom;
+        height = 260 + (40 * selectedNs.length) - margin.top - margin.bottom,
+        full_width = 210 + 360
 
     // clear if re-rendering
     const oldSvg = d3.select('#my_dataviz')
@@ -21,7 +22,7 @@ function main() {
     // append the svg object to the body of the page
     const svg = d3.select("#my_dataviz")
         .append("svg")
-        .attr("width", width + margin.left + margin.right)
+        .attr("width", full_width )
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
         .attr("transform", `translate(${margin.left}, ${margin.top})`);
