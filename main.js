@@ -288,7 +288,7 @@ function treeMap() {
 
     var svgLegend = d3.select("#treeLegend")
         .append("svg")
-        .attr("width", width)
+        .attr("width", 1900)
         .attr("height", legendHeight)
         .append("g")
         .attr("transform",
@@ -389,7 +389,7 @@ function treeMap() {
         //create legend
 
         const legendPadding = {
-            left: 30,
+            left: 10,
             top:  10
         };
         const legendRectSizes = {
@@ -414,7 +414,7 @@ function treeMap() {
             .attr("class", "legend-item")
             .attr("y", legendRectSizes.height )
             .attr("x", (d,i  ) => {
-                return (legendPadding.left + 120 ) * i - categories[i].length + 20
+                return (legendPadding.left + 200 ) * i  + 40
 
             })
             .attr("width", legendRectSizes.width)
@@ -422,13 +422,23 @@ function treeMap() {
             .attr("fill", function(d){
                 return myColor(d.Category)} )
 
+        categories.forEach( (c, index) => {
+            x.append("image")
+                .attr('xlink:href', categories_imgs[c])
+                .attr('width',40)
+                .attr('height',40)
+                .attr("x", (legendPadding.left + 200 ) * index )
+                .attr("y", legendRectSizes.height)
+                .attr("class", "circle_icon")
+        })
+
         x.append("g").selectAll("text")
             .data(tData[0].children )
             .enter().append("text")
             .attr("font-size", "16px")
             .attr("fill",  "#465353")
             .attr("y", legendRectSizes.height * 2.5)
-            .attr("x", (d,i ) => (legendPadding.left + 120 )  * i - categories[i].length + 20)
+            .attr("x", (d,i ) => (legendPadding.left + 200 )  * i + 40)
             .text( d => {
                 return d.Category
             })
