@@ -12,6 +12,10 @@ html * {
     fill: #69b3a2;
 }
 
+.bar-closed {
+    fill: #e41a1c;
+}
+
 .highlight {
     fill:palevioletred;
 }

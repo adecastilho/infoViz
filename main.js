@@ -95,9 +95,7 @@ function heatMap() {
             .select(".domain").remove()
 
         const yLabels = svg.select("#y-labels").selectAll(".tick")
-        console.log(yLabels)
 
-        console.log(selectedNeighbourhood)
         if (selectedNeighbourhood) {
 
             const label = yLabels.filter(function() {
@@ -116,10 +114,8 @@ function heatMap() {
                 .on("mouseover", function(d) {
                     d3.select(this)
                         .style("cursor", "pointer")
-                    console.log("mouse over")
                 })
                 .on("mouseout", function(d) {
-                    console.log("mouse out")
                 })
                 .on("click", function(d) {
                     // clear ui prev selection
@@ -135,7 +131,6 @@ function heatMap() {
                         d3.select(this)
                             .style("color", "darkred")
                             .style("font-weight", 900)
-                        console.log("click")
                         selectedNeighbourhood = clickedNeighbourhood
                     }
                     bar()
@@ -243,7 +238,7 @@ function treeMap() {
 
 
     var type = document.querySelector('input[name="radAnswer"]:checked').value;
-    console.log(type)
+
     const elem = document.getElementsByTagName("body")
     const bodyColor = window.getComputedStyle(elem[0], null).getPropertyValue("background-color");
     // get year from input
@@ -486,7 +481,6 @@ function bar() {
             // Labels of row and columns -> unique identifier of the column called 'group' and 'variable'
             var categories = Array.from(new Set(data.map(d => d.Category)))
                 .filter(c => selectedCs.includes(c))
-            console.log(categories)
 
             data = filterByNeighbourhood(data)
 
@@ -599,8 +593,16 @@ function bar() {
     function onMouseOut (event, data) {
         d3.select("#bar-tooltip").classed('hidden', true);
 
-        d3.select(this)
-            .attr("class", "bar")
+        console.log(data)
+
+        if (data[0] < 0) {
+            d3.select(this)
+                .attr("class", "bar-closed")
+        } else {
+            d3.select(this)
+                .attr("class", "bar")
+        }
+
     }
 }
 
