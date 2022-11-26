@@ -470,7 +470,7 @@ function bar() {
 
     var margin = 200;
     var width = 900;
-    var height = 500;
+    var height = 400;
 
     // clear if re-rendering
     const oldSvg = d3.select('#barplot')
@@ -504,7 +504,7 @@ function bar() {
             // Labels of row and columns -> unique identifier of the column called 'group' and 'variable'
             var categories = Array.from(new Set(data.map(d => d.Category)))
                 .filter(c => selectedCs.includes(c))
-
+            
             data = filterByNeighbourhood(data)
 
             data = countByCategory(data, year, categories);
@@ -575,10 +575,12 @@ function bar() {
                         .append('image')
                         .attr('xlink:href', categories_imgs[d])
                         .attr('x',0)
-                        .attr('width',48)
-                        .attr('height',48)
+                        .attr('width',42)
+                        .attr('height',42)
                         .attr("class", "circle_icon")
-                        .attr("transform", "translate(-25,-27)");
+                        .attr("transform", "translate(-21,-21)")
+                        .on("mouseover", onMouseOverLegend)   // Add listener for the events
+                        .on("mouseout", onMouseOutLegend);
                 });
             // Y Axis
             g.append("g")
@@ -633,11 +635,10 @@ function bar() {
                     .attr('height',40)
                     .attr("x", (legendPadding.left + 200 ) * 1.5 * Math.floor(index/3) )
                     .attr("y", legendRectSizes.height * 1.5 * (index%3))
-                    .attr("class", "circle_icon")
+                    .attr("class", "circle_icon");
                 
                 cat.push(c);
             })
-            console.log("here")
             x.append("g").selectAll("text")
                 .data(cat)
                 .enter().append("text")
@@ -653,6 +654,30 @@ function bar() {
             return data;
         }
     )
+
+    function onMouseOverLegend (event, data) {
+        // Get bar's xy position -> augment them for the tooltip
+        // Get bar's xy position -> augment them for the tooltip
+        var xPos = event.pageX +10; // get the center (on x coordinate)
+        var yPos = event.pageY +15; // get the center (on y coordinate)
+
+        // Update tooltip
+        d3.select("#bar-tooltip")
+            .style('left', xPos + 'px')
+            .style('top',  yPos + 'px')
+            .style('font-size','0.5rem')
+            .select('#value').text(data)
+
+        d3.select("#bar-tooltip").classed('hidden', false);
+
+        d3.select(this)
+            .attr('class', 'highlight')
+    }
+    function onMouseOutLegend (event, data) {
+        d3.select("#bar-tooltip").classed('hidden', true);
+
+        console.log(data)
+    }
 
     function onMouseOver (event, data) {
         // Get bar's xy position -> augment them for the tooltip
