@@ -11,8 +11,10 @@
 <body onload="main()">
 
     <div class="vis-container">
-        <h1><span style="color:#00458e">Victoria Businesses:</span> Impact of the <span style="color:#e41a1c">Covid-19</span> Pandemic</h1>
-
+        <div id="intro">
+            <h1><span style="color:#00458e">Victoria Businesses:</span> Impact of the <span style="color:#e41a1c">Covid-19 Pandemic</span></h1>
+            <p>Responses to the Covid pandemic, including travel restrictions, vaccine mandates, and distancing guidelines, have impacted not only human health, but also the environment and the economy. Over the last two and a half years, we witnessed these impacts in our community. Specifically, we watched local businesses struggling through mandated closures, then struggling due to supply chain shortages and short staffing. So what factors helped or hindered local businesses as they navigated through unprecedented times?</p>
+        </div>
         <div id="tree">
             <h2>How has the distribution of business types changed?</h2>
             <div style="display:grid; grid-template-columns: repeat(2, 1fr)">
@@ -94,11 +96,16 @@
                 </div>
 
                 <div id="bar">
+                    <div id="barplot">
+                        <svg width="1500" height="700"></svg>
+                    </div>
+                    <legend><h4><span style="color:#00458e">Business Categories:</span></h4></legend>
+                    <div id="barlegend"></div>
                     <!-- popup - tooltip -->
                     <div id="bar-tooltip" class="hidden">
                         <p><strong></strong></p>
                         <p><span id="value">100</span></p>
-
+                    
                     </div>
 
                 </div>

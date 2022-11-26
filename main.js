@@ -473,11 +473,11 @@ function bar() {
     var height = 500;
 
     // clear if re-rendering
-    const oldSvg = d3.select('#bar')
+    const oldSvg = d3.select('#barplot')
         .select("svg")
         .remove()
 
-    var svg = d3.select("#bar")
+    var svg = d3.select("#barplot")
         .append("svg")
         .attr("width", width+margin)
         .attr("height", height+margin);
@@ -590,6 +590,61 @@ function bar() {
                 .attr("dy", "-5em")
                 .attr("stroke", "black")
                 .text("Number of businesses per category");
+
+            // legend
+            const legendPadding = {
+                left: 10,
+                top:  10
+            };
+            const legendRectSizes = {
+                width:  30,
+                height: 30
+            }
+            const legendHeight = 120;
+            const elem = document.getElementsByTagName("body");
+            const bodyColor = window.getComputedStyle(elem[0], null).getPropertyValue("background-color");
+
+            var svgLegend = d3.select("#barlegend")
+                .append("svg")
+                .attr("width", width)
+                .attr("height", legendHeight*1.5)
+                .append("g")
+                .attr("transform",
+                    "translate(" + margin/2 + ", 0)");
+
+            const x = svgLegend.append("g")
+            .attr("id", "legend");
+
+            rect = x.append("rect")
+            // .attr("y", legendRectSizes.height)
+            .attr("width", width)
+            .attr("height", legendRectSizes.height * 6)
+            .attr("fill", bodyColor)
+
+            cat = []
+            categories.forEach( (c, index) => {
+                x.append("image")
+                    .attr('xlink:href', categories_imgs[c])
+                    .attr('width',40)
+                    .attr('height',40)
+                    .attr("x", (legendPadding.left + 200 ) * 1.5 * Math.floor(index/3) )
+                    .attr("y", legendRectSizes.height * 1.5 * (index%3))
+                    .attr("class", "circle_icon")
+                
+                cat.push(c);
+            })
+            console.log("here")
+            x.append("g").selectAll("text")
+                .data(cat)
+                .enter().append("text")
+                .attr("font-size", "16px")
+                .attr("fill",  "#465353")
+                .attr("y", (d,i ) => (legendRectSizes.height* 1.5*(i%3) + 25))
+                .attr("x", (d,i ) => (legendPadding.left + 200 ) *1.5 * Math.floor(i/3) + 50)
+                .text( d => {
+                    return d
+                })
+
 
             return data;
         }
