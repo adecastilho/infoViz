@@ -11,6 +11,17 @@ const categories_imgs = {
     "Professional": "img/professional_icon.png",
     "Retail": "img/retails_icon.png"}
 
+    const categories_transparent_imgs = {
+        "Accomodation" : "img/accomodation.png",
+        "Transportation": "img/transportation.png",
+        "Business & Financial": "img/finance.png",
+        "Other": "img/other.png",
+        "Food & Liquor": "img/food.png",
+        "Non Profit": "img/nonprofit.png",
+        "Personal Services": "img/service.png",
+        "Professional": "img/professional.png",
+        "Retail": "img/retails.png"}
+
 function main() {
     treeMap()
     heatMap()
@@ -412,19 +423,21 @@ function treeMap() {
             .enter()
             .append("rect")
             .attr("class", "legend-item")
-            .attr("y", legendRectSizes.height )
+            .attr("y", legendRectSizes.height * 2.5 - 47)
             .attr("x", (d,i  ) => {
-                return (legendPadding.left + 200 ) * i  + 40
+                return (legendPadding.left +200 ) * i  - 1
 
             })
-            .attr("width", legendRectSizes.width)
-            .attr("height", legendRectSizes.height)
+            .attr("width", legendRectSizes.width*1.4)
+            .attr("height", legendRectSizes.height*1.4)
+            .attr("rx", "10")
+            .attr("ry", "10")
             .attr("fill", function(d){
                 return myColor(d.Category)} )
 
         categories.forEach( (c, index) => {
             x.append("image")
-                .attr('xlink:href', categories_imgs[c])
+                .attr('xlink:href', categories_transparent_imgs[c])
                 .attr('width',40)
                 .attr('height',40)
                 .attr("x", (legendPadding.left + 200 ) * index )
@@ -437,8 +450,8 @@ function treeMap() {
             .enter().append("text")
             .attr("font-size", "16px")
             .attr("fill",  "#465353")
-            .attr("y", legendRectSizes.height * 2.5)
-            .attr("x", (d,i ) => (legendPadding.left + 200 )  * i + 40)
+            .attr("y", legendRectSizes.height * 2.5 - 20)
+            .attr("x", (d,i ) => (legendPadding.left + 200 )  * i + 50)
             .text( d => {
                 return d.Category
             })
@@ -529,7 +542,7 @@ function bar() {
                 .enter().append("g")
                 .attr("fill", function(d) { return color(d.key); })
                 .selectAll("rect")
-                .data(function(d) { return d; })
+                .data(function(d) { console.log("d is", d); return d; })
                 .enter().append("rect")
                 .on("mouseover", onMouseOver)   // Add listener for the events
                 .on("mouseout", onMouseOut)
@@ -587,6 +600,7 @@ function bar() {
         var xPos = event.pageX +20 ; // get the center (on x coordinate)
         var yPos = event.pageY +30; // get the center (on y coordinate)
 
+        console.log(data)
         console.log(event, data);
         // Update tooltip
         d3.select("#bar-tooltip")
@@ -666,7 +680,7 @@ function countByCategory(data, year, categories) {
             .length
         var close = data.filter(d => d.Category == c && d.ExpiredYear == year)
             .length
-        countList.push({Category: c, Open: open, Close: -close})
+        countList.push({Open: open, Close: -close, Category: c})
     })
     return countList
 }
