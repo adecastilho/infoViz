@@ -604,6 +604,10 @@ function bar() {
             const elem = document.getElementsByTagName("body");
             const bodyColor = window.getComputedStyle(elem[0], null).getPropertyValue("background-color");
 
+            // clear if re-rendering
+            const oldLegend = d3.select('#barlegend')
+                .select("svg")
+                .remove()
             var svgLegend = d3.select("#barlegend")
                 .append("svg")
                 .attr("width", width)
