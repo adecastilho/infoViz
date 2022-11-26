@@ -1,6 +1,25 @@
+var selectedNeighbourhood = null
+
+const categories_imgs = {
+    "Accomodation" : "img/accomodation_icon.png",
+    "Transportation": "img/transportation_icon.png",
+    "Business & Financial": "img/finance_icon.png",
+    "Other": "img/other_icon.png",
+    "Food & Liquor": "img/food_icon.png",
+    "Non Profit": "img/nonprofit_icon.png",
+    "Personal Services": "img/service_icon.png",
+    "Professional": "img/professional_icon.png",
+    "Retail": "img/retails_icon.png"}
+
 function main() {
     treeMap()
     heatMap()
+    bar()
+}
+
+function heatAndBarRefresh() {
+    heatMap()
+    bar()
 }
 
 function heatMap() {
@@ -61,6 +80,8 @@ function heatMap() {
             .attr("text-anchor", "end")
             .attr("transform", "rotate(-75)")
 
+        const xLabels = d3.select("x-labels")
+
 
         // Build Y scales and axis:
         const y = d3.scaleBand()
@@ -70,7 +91,58 @@ function heatMap() {
         svg.append("g")
             .style("font-size", 15)
             .call(d3.axisLeft(y).tickSize(0))
+            .attr("id", "y-labels")
             .select(".domain").remove()
+
+        const yLabels = svg.select("#y-labels").selectAll(".tick")
+        console.log(yLabels)
+
+        console.log(selectedNeighbourhood)
+        if (selectedNeighbourhood) {
+
+            const label = yLabels.filter(function() {
+                return d3.select(this).data() == selectedNeighbourhood; // filter by single attribute
+            })
+
+            label.style("color", "darkred")
+                .style("font-weight", 900)
+        }
+
+        const yLabelsArray = Array.from(yLabels)
+
+
+        yLabelsArray.forEach(function(d1) {
+            d3.select(d1)
+                .on("mouseover", function(d) {
+                    d3.select(this)
+                        .style("cursor", "pointer")
+                    console.log("mouse over")
+                })
+                .on("mouseout", function(d) {
+                    console.log("mouse out")
+                })
+                .on("click", function(d) {
+                    // clear ui prev selection
+                    yLabels
+                        .style("color", "black")
+                        .style("font-weight", 100)
+
+                    const clickedNeighbourhood = d3.select(d1).data()[0]
+
+                    if (clickedNeighbourhood == selectedNeighbourhood) {
+                        selectedNeighbourhood = null;
+                    } else {
+                        d3.select(this)
+                            .style("color", "darkred")
+                            .style("font-weight", 900)
+                        console.log("click")
+                        selectedNeighbourhood = clickedNeighbourhood
+                    }
+                    bar()
+                })
+
+        })
+
 
         // Build color scale
         var myColor = d3.scaleLinear()
@@ -78,7 +150,7 @@ function heatMap() {
             .domain([1, 100])
 
         // create a tooltip
-        const tooltip = d3.select("#my_dataviz")
+        const tooltip = d3.select("#heat")
             .append("div")
             .style("opacity", 0)
             .attr("class", "tooltip")
@@ -99,10 +171,11 @@ function heatMap() {
                 .style("opacity", 1)
         }
         const mousemove = function (event, d) {
+
             tooltip
                 .html("The exact value of<br>this cell is: " + d.Count)
-                .style("left", (event.x) + 20 + "px")
-                .style("top", (event.y) + 20 + "px")
+                .style("left", (event.pageX) + 20 + "px")
+                .style("top", (event.pageY) + 20 + "px")
         }
         const mouseleave = function (event, d) {
             tooltip
@@ -179,7 +252,7 @@ function treeMap() {
 
     // set the dimensions and margins of the graph
     var margin = {top: 40, right: 0, bottom: 40, left: 0},
-        width = 1820 - margin.left - margin.right,
+        width = 1750 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom,
         legendHeight = 120;
 
@@ -371,6 +444,165 @@ function treeMap() {
 
 }
 
+function bar() {
+    var year = document.getElementById("yearInput").value
+    var selectedCs = [...document.getElementById("categoryInput").options]
+        .filter(option => option.selected)
+        .map(option => option.value)
+
+    var margin = 200;
+    var width = 900;
+    var height = 500;
+
+    // clear if re-rendering
+    const oldSvg = d3.select('#bar')
+        .select("svg")
+        .remove()
+
+    var svg = d3.select("#bar")
+        .append("svg")
+        .attr("width", width+margin)
+        .attr("height", height+margin);
+
+    var xScale = d3.scaleBand().range([0, width]).padding(0.4);
+    var yScale = d3.scaleLinear().range([height, 0]);
+
+    // title
+    svg.append("text")
+        .attr("x", 50)
+        .attr("y", 50)
+        .attr("font-size", "24px")
+        .text(() => {
+            return selectedNeighbourhood ?
+                `Number of businesses that opened & closed in ${year} in ${selectedNeighbourhood}`
+                :
+                `Number of businesses that opened & closed in ${year} in all neighbourhoods`
+        })
+
+    var g = svg.append("g").attr("transform", "translate("+100+","+100+")");
+
+    d3.csv("./victoria_data_better_categories.csv").then(
+        function(data) {
+            // Labels of row and columns -> unique identifier of the column called 'group' and 'variable'
+            var categories = Array.from(new Set(data.map(d => d.Category)))
+                .filter(c => selectedCs.includes(c))
+            console.log(categories)
+
+            data = filterByNeighbourhood(data)
+
+            data = countByCategory(data, year, categories);
+
+            // Add image icon to category
+            data.forEach((d) => {
+                d.Img = categories_imgs[d.Category];
+            })
+
+            // color palette = one color per subgroup
+            var color = d3.scaleOrdinal()
+                .domain(["Open","Close", "Category"])
+                .range(['#69b3a2', '#e41a1c'])
+
+            var series = d3.stack()
+                .keys(["Open","Close"])
+                .offset(d3.stackOffsetDiverging)
+                (data);
+
+
+            var xScale = d3.scaleBand().range([0, width]).padding(0.4);
+            xScale.domain(data.map(function (d) { return d.Category; }));
+
+            const highest = data.reduce((prev, cur) => (cur.Open > prev.Open ? cur : prev)).Open;
+            const lowest = data.reduce((prev, cur) => (cur.Close < prev.Close ? cur : prev)).Close;
+            var yScale = d3.scaleLinear()
+                .domain([lowest, highest])
+                .range([height, 0]);
+
+            var zScale = d3.scaleOrdinal(d3.schemeCategory10);
+
+            g.append("g")
+                .selectAll("g")
+                .data(series)
+                .enter().append("g")
+                .attr("fill", function(d) { return color(d.key); })
+                .selectAll("rect")
+                .data(function(d) { return d; })
+                .enter().append("rect")
+                .on("mouseover", onMouseOver)   // Add listener for the events
+                .on("mouseout", onMouseOut)
+                .attr("width", xScale.bandwidth)
+                .attr("x", function(d) { return xScale(d.data.Category); })
+                .attr("y", function(d) { return yScale(d[1]); })
+                .transition()
+                .ease(d3.easeLinear)
+                .duration(500)
+                .attr("height", function(d) { return yScale(d[0]) - yScale(d[1]); });
+
+            // X axis
+            svg.append("g")
+                .attr("transform", "translate(100," + (100+yScale(0)) + ")")
+                .attr("class", "xaxis")
+                .call(d3.axisBottom(xScale))
+            // .selectAll("text")                  // from down to end is rotate the label for the tick on x-axis
+            // .attr("text-anchor", "end")
+            // .attr("dx", "-.8em")
+            // .attr("dy", ".5em")
+            // .attr("transform", "rotate(-65)");
+
+            svg.select(".xaxis").selectAll("text").remove();
+
+            var ticks = svg.select(".xaxis")
+                .selectAll(".tick")
+                .each(function(d,i) {
+                    console.log(d, i, categories_imgs[d]);
+                    d3.select(this)
+                        .append('image')
+                        .attr('xlink:href', categories_imgs[d])
+                        .attr('x',0)
+                        .attr('width',48)
+                        .attr('height',48)
+                        .attr("class", "circle_icon")
+                        .attr("transform", "translate(-25,-27)");
+                });
+            // Y Axis
+            g.append("g")
+                .call(d3.axisLeft(yScale).tickFormat(function(d){return d;})
+                    .ticks(10))
+                .append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("y", 10)
+                .attr("dy", "-5em")
+                .attr("stroke", "black")
+                .text("Number of businesses per category");
+
+            return data;
+        }
+    )
+
+    function onMouseOver (event, data) {
+        // Get bar's xy position -> augment them for the tooltip
+        var xPos = event.pageX +20 ; // get the center (on x coordinate)
+        var yPos = event.pageY +30; // get the center (on y coordinate)
+
+        console.log(event, data);
+        // Update tooltip
+        d3.select("#bar-tooltip")
+            .style('left', xPos + 'px')
+            .style('top',  yPos + 'px')
+            .select('#value').text(-data[0] != 0 ? "Closed businesses:" + (-data[0]) : "Opened Businesses: " + data[1])
+
+        d3.select("#bar-tooltip").classed('hidden', false);
+
+        d3.select(this)
+            .attr('class', 'highlight')
+    }
+
+    function onMouseOut (event, data) {
+        d3.select("#bar-tooltip").classed('hidden', true);
+
+        d3.select(this)
+            .attr("class", "bar")
+    }
+}
 
 
 // helper functions
@@ -386,6 +618,10 @@ function filterIssuedInYear(data, year) {
 function filterExpiredInYear(data, year) {
     const filtered = data.filter(d => d.ExpiredYear == year)
     return filtered
+}
+
+function filterByNeighbourhood(data) {
+    return !selectedNeighbourhood ? data: data.filter(d => d.Neighbourhood == selectedNeighbourhood)
 }
 
 function countByNeighbourhoodCategory(data, categories, neighbourhoods) {
@@ -411,3 +647,14 @@ function countByCategoryForTree(data, categories) {
     return {Category: "Origin", children: countList}
 }
 
+function countByCategory(data, year, categories) {
+    var countList = []
+    categories.forEach(c => {
+        var open = data.filter(d => d.Category == c && d.IssuedYear == year)
+            .length
+        var close = data.filter(d => d.Category == c && d.ExpiredYear == year)
+            .length
+        countList.push({Category: c, Open: open, Close: -close})
+    })
+    return countList
+}
