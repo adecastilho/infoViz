@@ -47,13 +47,13 @@
         <div id="heatAndBar">
             <h2>Patterns by Neighbourhood</h2>
 
-            <div class="heat-container">
+            <div class="heat-and-bar-container">
                 <!-- Create a div where the graph will take place -->
                 <div id="heat"></div>
 
                 <div class="input-container" >
                     <p>Year:</p>
-                    <input onChange="heatMap()" type="range" min="2018" max="2021" value="2021" class="slider" id="yearInput">
+                    <input onChange="heatAndBarRefresh()" type="range" min="2018" max="2021" value="2021" class="slider" id="yearInput">
                     <datalist id="years">
                         <option value="2018" label="2018"></option>
                         <option value="2019" label="2019"></option>
@@ -62,7 +62,7 @@
                     </datalist>
 
                     <p>Neighbourhoods:</p>
-                    <select multiple="multiple" size="14" id="neighbourhoodInput" onChange="main()">
+                    <select multiple="multiple" size="14" id="neighbourhoodInput" onChange="heatAndBarRefresh()">
                         <option selected value="Burnside">Burnside</option>
                         <option selected value="Downtown">Downtown</option>
                         <option selected value="Fairfield">Fairfield</option>
@@ -80,7 +80,7 @@
                     </select>
 
                     <p>Categories:</p>
-                    <select multiple="multiple" size="9" id="categoryInput" onChange="main()">
+                    <select multiple="multiple" size="9" id="categoryInput" onChange="heatAndBarRefresh()">
                         <option selected value="Accomodation">Accomodation</option>
                         <option selected value="Business & Financial">Business & Financial</option>
                         <option selected value="Food & Liquor">Food & Liquor</option>
@@ -91,6 +91,16 @@
                         <option selected value="Retail">Retail</option>
                         <option selected value="Transportation">Transportation</option>
                     </select>
+                </div>
+
+                <div id="bar">
+                    <!-- popup - tooltip -->
+                    <div id="bar-tooltip" class="hidden">
+                        <p><strong>#businesses</strong></p>
+                        <p><span id="value">100</span></p>
+
+                    </div>
+
                 </div>
             </div>
 
