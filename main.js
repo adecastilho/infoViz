@@ -11,6 +11,17 @@ const categories_imgs = {
     "Professional": "img/professional_icon.png",
     "Retail": "img/retails_icon.png"}
 
+    const categories_transparent_imgs = {
+        "Accomodation" : "img/accomodation.png",
+        "Transportation": "img/transportation.png",
+        "Business & Financial": "img/finance.png",
+        "Other": "img/other.png",
+        "Food & Liquor": "img/food.png",
+        "Non Profit": "img/nonprofit.png",
+        "Personal Services": "img/service.png",
+        "Professional": "img/professional.png",
+        "Retail": "img/retails.png"}
+
 function main() {
     treeMap()
     heatMap()
@@ -412,19 +423,21 @@ function treeMap() {
             .enter()
             .append("rect")
             .attr("class", "legend-item")
-            .attr("y", legendRectSizes.height )
+            .attr("y", legendRectSizes.height * 2.5 - 47)
             .attr("x", (d,i  ) => {
-                return (legendPadding.left + 200 ) * i  + 40
+                return (legendPadding.left +200 ) * i  - 1
 
             })
-            .attr("width", legendRectSizes.width)
-            .attr("height", legendRectSizes.height)
+            .attr("width", legendRectSizes.width*1.4)
+            .attr("height", legendRectSizes.height*1.4)
+            .attr("rx", "10")
+            .attr("ry", "10")
             .attr("fill", function(d){
                 return myColor(d.Category)} )
 
         categories.forEach( (c, index) => {
             x.append("image")
-                .attr('xlink:href', categories_imgs[c])
+                .attr('xlink:href', categories_transparent_imgs[c])
                 .attr('width',40)
                 .attr('height',40)
                 .attr("x", (legendPadding.left + 200 ) * index )
@@ -437,8 +450,8 @@ function treeMap() {
             .enter().append("text")
             .attr("font-size", "16px")
             .attr("fill",  "#465353")
-            .attr("y", legendRectSizes.height * 2.5)
-            .attr("x", (d,i ) => (legendPadding.left + 200 )  * i + 40)
+            .attr("y", legendRectSizes.height * 2.5 - 20)
+            .attr("x", (d,i ) => (legendPadding.left + 200 )  * i + 50)
             .text( d => {
                 return d.Category
             })
@@ -457,14 +470,14 @@ function bar() {
 
     var margin = 200;
     var width = 900;
-    var height = 500;
+    var height = 400;
 
     // clear if re-rendering
-    const oldSvg = d3.select('#bar')
+    const oldSvg = d3.select('#barplot')
         .select("svg")
         .remove()
 
-    var svg = d3.select("#bar")
+    var svg = d3.select("#barplot")
         .append("svg")
         .attr("width", width+margin)
         .attr("height", height+margin);
@@ -491,7 +504,7 @@ function bar() {
             // Labels of row and columns -> unique identifier of the column called 'group' and 'variable'
             var categories = Array.from(new Set(data.map(d => d.Category)))
                 .filter(c => selectedCs.includes(c))
-
+            
             data = filterByNeighbourhood(data)
 
             data = countByCategory(data, year, categories);
@@ -529,7 +542,7 @@ function bar() {
                 .enter().append("g")
                 .attr("fill", function(d) { return color(d.key); })
                 .selectAll("rect")
-                .data(function(d) { return d; })
+                .data(function(d) { console.log("d is", d); return d; })
                 .enter().append("rect")
                 .on("mouseover", onMouseOver)   // Add listener for the events
                 .on("mouseout", onMouseOut)
@@ -562,10 +575,12 @@ function bar() {
                         .append('image')
                         .attr('xlink:href', categories_imgs[d])
                         .attr('x',0)
-                        .attr('width',48)
-                        .attr('height',48)
+                        .attr('width',42)
+                        .attr('height',42)
                         .attr("class", "circle_icon")
-                        .attr("transform", "translate(-25,-27)");
+                        .attr("transform", "translate(-21,-21)")
+                        .on("mouseover", onMouseOverLegend)   // Add listener for the events
+                        .on("mouseout", onMouseOutLegend);
                 });
             // Y Axis
             g.append("g")
@@ -578,15 +593,98 @@ function bar() {
                 .attr("stroke", "black")
                 .text("Number of businesses per category");
 
+            // legend
+            const legendPadding = {
+                left: 10,
+                top:  10
+            };
+            const legendRectSizes = {
+                width:  30,
+                height: 30
+            }
+            const legendHeight = 120;
+            const elem = document.getElementsByTagName("body");
+            const bodyColor = window.getComputedStyle(elem[0], null).getPropertyValue("background-color");
+
+            // clear if re-rendering
+            const oldLegend = d3.select('#barlegend')
+                .select("svg")
+                .remove()
+            var svgLegend = d3.select("#barlegend")
+                .append("svg")
+                .attr("width", width)
+                .attr("height", legendHeight*1.5)
+                .append("g")
+                .attr("transform",
+                    "translate(" + margin/2 + ", 0)");
+
+            const x = svgLegend.append("g")
+            .attr("id", "legend");
+
+            rect = x.append("rect")
+            // .attr("y", legendRectSizes.height)
+            .attr("width", width)
+            .attr("height", legendRectSizes.height * 6)
+            .attr("fill", bodyColor)
+
+            cat = []
+            categories.forEach( (c, index) => {
+                x.append("image")
+                    .attr('xlink:href', categories_imgs[c])
+                    .attr('width',40)
+                    .attr('height',40)
+                    .attr("x", (legendPadding.left + 200 ) * 1.5 * Math.floor(index/3) )
+                    .attr("y", legendRectSizes.height * 1.5 * (index%3))
+                    .attr("class", "circle_icon");
+                
+                cat.push(c);
+            })
+            x.append("g").selectAll("text")
+                .data(cat)
+                .enter().append("text")
+                .attr("font-size", "16px")
+                .attr("fill",  "#465353")
+                .attr("y", (d,i ) => (legendRectSizes.height* 1.5*(i%3) + 25))
+                .attr("x", (d,i ) => (legendPadding.left + 200 ) *1.5 * Math.floor(i/3) + 50)
+                .text( d => {
+                    return d
+                })
+
+
             return data;
         }
     )
+
+    function onMouseOverLegend (event, data) {
+        // Get bar's xy position -> augment them for the tooltip
+        // Get bar's xy position -> augment them for the tooltip
+        var xPos = event.pageX +10; // get the center (on x coordinate)
+        var yPos = event.pageY +15; // get the center (on y coordinate)
+
+        // Update tooltip
+        d3.select("#bar-tooltip")
+            .style('left', xPos + 'px')
+            .style('top',  yPos + 'px')
+            .style('font-size','0.5rem')
+            .select('#value').text(data)
+
+        d3.select("#bar-tooltip").classed('hidden', false);
+
+        d3.select(this)
+            .attr('class', 'highlight')
+    }
+    function onMouseOutLegend (event, data) {
+        d3.select("#bar-tooltip").classed('hidden', true);
+
+        console.log(data)
+    }
 
     function onMouseOver (event, data) {
         // Get bar's xy position -> augment them for the tooltip
         var xPos = event.pageX +20 ; // get the center (on x coordinate)
         var yPos = event.pageY +30; // get the center (on y coordinate)
 
+        console.log(data)
         console.log(event, data);
         // Update tooltip
         d3.select("#bar-tooltip")
@@ -666,7 +764,7 @@ function countByCategory(data, year, categories) {
             .length
         var close = data.filter(d => d.Category == c && d.ExpiredYear == year)
             .length
-        countList.push({Category: c, Open: open, Close: -close})
+        countList.push({Open: open, Close: -close, Category: c})
     })
     return countList
 }

@@ -9,102 +9,115 @@
     <title>D3</title>
 </head>
 <body onload="main()">
-
     <div class="vis-container">
-        <h1>Victoria Businesses: Impact of the Covid-19 Pandemic</h1>
-
-        <div id="tree">
-            <h2>How has the distribution of business types changed?</h2>
-            <div style="display:grid; grid-template-columns: repeat(2, 1fr)">
-            <div>
-                <p>Interact with the treemaps by selecting distribution across all open businesses, across closed businesses, or across newly opened businesses</p>
+        <section class="intro">
+            <div id="intro">
+                <h1><span style="color:#00458e">Victoria Businesses:</span> Impact of the <span style="color:#e41a1c">Covid-19</span> Pandemic</h1>
+                <p>Responses to the Covid pandemic, including travel restrictions, vaccine mandates, and distancing guidelines, have impacted not only human health, but also the environment and the economy. Over the last two and a half years, we witnessed these impacts in our community. Specifically, we watched local businesses struggling through mandated closures, then struggling due to supply chain shortages and short staffing.</p>
+                <p>So what factors helped or hindered local businesses as they navigated through unprecedented times?</p>
             </div>
-            <div id="radios">
-                <div class="radio">
-                    <input type="radio" id="allOpen" name="radAnswer" value="all" onClick="treeMap()" checked/>
-                    <label for="allOpen">All Open Businesses</label>
-                </div>
-                <div class="radio">
-                    <input type="radio" id="newOpen" name="radAnswer" value="new" onClick="treeMap()"/>
-                    <label for="newOpen">Newly Opened Businesses</label>
-                </div>
-                <div class="radio">
-                    <input type="radio" id="closed" name="radAnswer" value="closed" onClick="treeMap()"/>
-                    <label for="closed">Closed Businesses</label>
-                </div>
-            </div>
-        </div>
-            <div id="treeMaps">
-                <!-- Create a div where the graph will take place -->
-                <div id="t1"></div>
-                <div id="t2"></div>
-                <div id="t3"></div>
-                <div id="t4"></div>
-            </div>
-            <legend> Business Categories:</legend>
-            <div id="treeLegend"></div>
-        </div>
-        <div id="heatAndBar">
-            <h2>Patterns by Neighbourhood</h2>
-
-            <div class="heat-and-bar-container">
-                <!-- Create a div where the graph will take place -->
-                <div id="heat"></div>
-
-                <div class="input-container" >
-                    <p>Year:</p>
-                    <input onChange="heatAndBarRefresh()" type="range" min="2018" max="2021" value="2021" class="slider" id="yearInput">
-                    <datalist id="years">
-                        <option value="2018" label="2018"></option>
-                        <option value="2019" label="2019"></option>
-                        <option value="2020" label="2020"></option>
-                        <option value="2021" label="2021"></option>
-                    </datalist>
-
-                    <p>Neighbourhoods:</p>
-                    <select multiple="multiple" size="14" id="neighbourhoodInput" onChange="heatAndBarRefresh()">
-                        <option selected value="Burnside">Burnside</option>
-                        <option selected value="Downtown">Downtown</option>
-                        <option selected value="Fairfield">Fairfield</option>
-                        <option selected value="Fernwood">Fernwood</option>
-                        <option selected value="Gonzales">Gonzales</option>
-                        <option selected value="Harris Green">Harris Green</option>
-                        <option selected value="Hillside/Quadra">Hillside/Quadra</option>
-                        <option selected value="James Bay">James Bay</option>
-                        <option selected value="North Jubilee">North Jubilee</option>
-                        <option selected value="North Park">North Park</option>
-                        <option selected value="Oaklands">Oaklands</option>
-                        <option selected value="Rockland">Rockland</option>
-                        <option selected value="South Jubilee">South Jubilee</option>
-                        <option selected value="Victoria West">Victoria West</option>
-                    </select>
-
-                    <p>Categories:</p>
-                    <select multiple="multiple" size="9" id="categoryInput" onChange="heatAndBarRefresh()">
-                        <option selected value="Accomodation">Accomodation</option>
-                        <option selected value="Business & Financial">Business & Financial</option>
-                        <option selected value="Food & Liquor">Food & Liquor</option>
-                        <option selected value="Non Profit">Non Profit</option>
-                        <option selected value="Other">Other</option>
-                        <option selected value="Personal Services">Personal Services</option>
-                        <option selected value="Professional">Professional</option>
-                        <option selected value="Retail">Retail</option>
-                        <option selected value="Transportation">Transportation</option>
-                    </select>
-                </div>
-
-                <div id="bar">
-                    <!-- popup - tooltip -->
-                    <div id="bar-tooltip" class="hidden">
-                        <p><strong>#businesses</strong></p>
-                        <p><span id="value">100</span></p>
-
+        </section>
+        <section class="treemap">
+            <div id="tree">
+                <h2>How has the distribution of business types changed?</h2>
+                <div style="display:grid; grid-template-columns: repeat(2, 1fr)">
+                    <div>
+                        <p>Interact with the treemaps by selecting distribution across all open businesses, across closed businesses, or across newly opened businesses</p>
                     </div>
-
+                    <div id="radios">
+                        <div class="radio">
+                            <input type="radio" id="allOpen" name="radAnswer" value="all" onClick="treeMap()" checked/>
+                            <label for="allOpen">All Open Businesses</label>
+                        </div>
+                        <div class="radio">
+                            <input type="radio" id="newOpen" name="radAnswer" value="new" onClick="treeMap()"/>
+                            <label for="newOpen">Newly Opened Businesses</label>
+                        </div>
+                        <div class="radio">
+                            <input type="radio" id="closed" name="radAnswer" value="closed" onClick="treeMap()"/>
+                            <label for="closed">Closed Businesses</label>
+                        </div>
+                    </div>
+                </div>
+                <div id="treeMaps">
+                    <!-- Create a div where the graph will take place -->
+                    <div id="t1"></div>
+                    <div id="t2"></div>
+                    <div id="t3"></div>
+                    <div id="t4"></div>
+                </div>
+                <legend>Business Categories:</legend>
+                <div id="treeLegend"></div>
+            </div>
+        </section>
+        <section class="heatbar">
+            <div id="heatAndBar">
+                <h2>Patterns by Neighbourhood</h2>
+                <h3>What categories of local businesses suffered permanent closures during the <span style="color:#e41a1c">Covid-19</span> pandemic, and what were the patterns over the course of the pandemic?</h2>
+                <div class="heat-and-bar-container">
+                    <!-- Create a div where the graph will take place -->
+                    <div id="heat"></div>
+    
+                    <div class="input-container" >
+                        <p>Year:</p>
+                        <input onChange="heatAndBarRefresh()" type="range" min="2018" max="2021" value="2021" class="slider" id="yearInput">
+                        <datalist id="years">
+                            <option value="2018" label="2018"></option>
+                            <option value="2019" label="2019"></option>
+                            <option value="2020" label="2020"></option>
+                            <option value="2021" label="2021"></option>
+                        </datalist>
+    
+                        <p>Neighbourhoods:</p>
+                        <select multiple="multiple" size="14" id="neighbourhoodInput" onChange="heatMap()">
+                            <option selected value="Burnside">Burnside</option>
+                            <option selected value="Downtown">Downtown</option>
+                            <option selected value="Fairfield">Fairfield</option>
+                            <option selected value="Fernwood">Fernwood</option>
+                            <option selected value="Gonzales">Gonzales</option>
+                            <option selected value="Harris Green">Harris Green</option>
+                            <option selected value="Hillside/Quadra">Hillside/Quadra</option>
+                            <option selected value="James Bay">James Bay</option>
+                            <option selected value="North Jubilee">North Jubilee</option>
+                            <option selected value="North Park">North Park</option>
+                            <option selected value="Oaklands">Oaklands</option>
+                            <option selected value="Rockland">Rockland</option>
+                            <option selected value="South Jubilee">South Jubilee</option>
+                            <option selected value="Victoria West">Victoria West</option>
+                        </select>
+    
+                        <p>Categories:</p>
+                        <select multiple="multiple" size="9" id="categoryInput" onChange="heatAndBarRefresh()">
+                            <option selected value="Accomodation">Accomodation</option>
+                            <option selected value="Business & Financial">Business & Financial</option>
+                            <option selected value="Food & Liquor">Food & Liquor</option>
+                            <option selected value="Non Profit">Non Profit</option>
+                            <option selected value="Other">Other</option>
+                            <option selected value="Personal Services">Personal Services</option>
+                            <option selected value="Professional">Professional</option>
+                            <option selected value="Retail">Retail</option>
+                            <option selected value="Transportation">Transportation</option>
+                        </select>
+                    </div>
+    
+                    <div id="bar">
+                        <div id="barplot">
+                            <svg width="1500" height="700"></svg>
+                        </div>
+                        <legend><h4><span style="color:#00458e">Business Categories:</span></h4></legend>
+                        <div id="barlegend"></div>
+                        <!-- popup - tooltip -->
+                        <div id="bar-tooltip" class="hidden">
+                            <p><strong></strong></p>
+                            <p><span id="value">100</span></p>
+                        
+                        </div>
+    
+                    </div>
                 </div>
             </div>
-
-        </div>
+        </section>
+        
 
     </div>
     <script src="main.js"></script>
